@@ -72,9 +72,9 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release-assets/linux-amd64/crx-linux-amd64
-            release-assets/windows-amd64.exe/crx-windows-amd64.exe
-            release-assets/darwin-amd64/crx-darwin-amd64
-            release-assets/darwin-arm64/crx-darwin-arm64
+            release-assets/crx-linux-amd64/crx-linux-amd64
+            release-assets/crx-windows-amd64.exe/crx-windows-amd64.exe
+            release-assets/crx-darwin-amd64/crx-darwin-amd64
+            release-assets/crx-darwin-arm64/crx-darwin-arm64
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
