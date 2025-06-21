@@ -12,6 +12,11 @@ import (
 func main() {
 	extensionID := flag.String("id", "", "Unique extension ID")
 	flag.Parse()
+
+	fetchAndSave(*extensionID)
+}
+
+func fetchAndSave(extensionID string) {
 	baseURL := "https://clients2.google.com/service/update2/crx"
 
 	u, err := url.Parse(baseURL)
@@ -24,15 +29,11 @@ func main() {
 	params.Add("response", "redirect")
 	params.Add("acceptformat", "crx3,puff")
 	params.Add("prodversion", "137.0.7151")
-	params.Add("x", fmt.Sprintf("id=%s&installsource=ondemand&uc", *extensionID))
+	params.Add("x", fmt.Sprintf("id=%s&installsource=ondemand&uc", extensionID))
 
 	u.RawQuery = params.Encode()
 	finalURL := u.String()
 
-	fetchAndSave(finalURL)
-}
-
-func fetchAndSave(url string) {
 	client := &http.Client{
 		// Follow redirect
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
@@ -40,7 +41,7 @@ func fetchAndSave(url string) {
 		},
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", finalURL, nil)
 	if err != nil {
 		fmt.Println("Failed to make new request.")
 		panic(err)
@@ -62,7 +63,9 @@ func fetchAndSave(url string) {
 		panic("invalid response")
 	}
 
-	outFile, err := os.Create("temp.crx")
+	fileName := fmt.Sprintf("%s.crx", extensionID)
+
+	outFile, err := os.Create(fileName)
 	if err != nil {
 		fmt.Println("Failed to create download file.")
 		res.Body.Close()
